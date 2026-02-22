@@ -4,7 +4,7 @@ A web application that uses AI to analyze open-source repositories and recommend
 
 ## User stories
 
-See instructions. Delete this line and place a link to the user stories here.
+[Link_to_Issues](https://github.com/swe-students-spring2026/2-web-app-quantum_quails/issues)
 
 ## Steps necessary to run the software
 
