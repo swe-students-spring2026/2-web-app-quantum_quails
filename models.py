@@ -1,6 +1,7 @@
 # Mongo DB Schema
 
 from datetime import datetime
+from bson.objectid import ObjectId
 
 # --- USER SCHEMA ---
 def create_user(username, email, languages, experience_level):
