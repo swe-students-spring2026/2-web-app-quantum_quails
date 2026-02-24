@@ -1,6 +1,6 @@
 # Mongo DB Schema
 
-from datetime import datetime
+from datetime import datetime, timezone
 from bson.objectid import ObjectId
 
 # --- USER SCHEMA ---
@@ -11,7 +11,7 @@ def create_user(username, email, languages, experience_level):
         "preferred_languages": languages,
         "experience_level": experience_level,
         "saved_issues": [],
-        "created_at": datetime.now(datetime.timezone.utc)
+        "created_at": datetime.now(timezone.utc)
     }
 
 # --- PROJECT SCHEMA ---
