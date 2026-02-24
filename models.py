@@ -28,7 +28,7 @@ def create_issue(project_id, title, issue_url, difficulty_level):
         "project_id": ObjectId(project_id),
         "title": title,
         "issue_url": issue_url,
-        "difficulty_label": difficulty_level,
+        "difficulty_level": difficulty_level,
         "is_active": True,
         "created_at": datetime.now(datetime.timezone.utc)
     }
