@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Repo Feed</title>
+</head>
+<body>
+    <h1>Repository Feed</h1>
+
+    <a href="{{ url_for('add') }}">Add Repository</a>
+    <br><br>
+
+    {% for project in projects %}
+        <div>
+            <strong>{{ project.repo_name }}</strong><br>
+            {{ project.primary_language }}<br>
+            <a href="{{ project.repo_url }}" target="_blank">View Repo</a>
+            <hr>
+        </div>
+    {% endfor %}
+</body>
+</html>

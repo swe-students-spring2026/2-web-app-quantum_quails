@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
+from models import create_project
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ db = client.get_database()
 def index():
     items = db.items.find()
     return render_template('index.html', items=items)
+
 
 @app.route('/item/<id>')
 def details(id):
