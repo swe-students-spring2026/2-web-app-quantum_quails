@@ -1,16 +1,94 @@
 {% extends "base.html" %}
 
-{% block title %}Repository Feed - Quantum Quails{% endblock %}
+{% block title %}Repository Feed - name placeholder{% endblock %}
 
 {% block content %}
-<h1>Repository Feed</h1>
+{# Page Header #}
+<h1 class="text-lg font-semibold text-white mb-4">Repository Feed</h1>
 
-{% for project in projects %}
-    <div>
-        <strong>{{ project.repo_name }}</strong><br>
-        {{ project.primary_language }}<br>
-        <a href="{{ project.repo_url }}" target="_blank">View Repo</a>
-        <hr>
+{# Repository Cards #}
+<div class="space-y-3">
+    {% for project in projects %}
+    <article class="bg-gh-surface rounded-lg border border-gh-border">
+        {# Card Header #}
+        <div class="p-3 border-b border-gh-border">
+            <h2 class="text-base font-medium text-white">{{ project.repo_name }}</h2>
+            <a href="{{ project.repo_url }}" target="_blank" rel="noopener noreferrer"
+               class="text-sm text-gh-link block truncate">
+                {{ project.repo_url }}
+            </a>
+        </div>
+
+        {# README Preview #}
+        <div class="p-3">
+            {% if project.readme %}
+            <div class="fade-bottom h-16 overflow-hidden">
+                <p class="text-sm text-gh-muted leading-relaxed">{{ project.readme }}</p>
+            </div>
+            {% else %}
+            <p class="text-sm text-gh-muted italic">No README available</p>
+            {% endif %}
+        </div>
+
+        {# Active Issues #}
+        <div class="p-3 border-t border-gh-border">
+            <h3 class="text-xs font-medium text-gh-muted uppercase tracking-wide mb-2">Active Issues</h3>
+            {% if project.issues %}
+            <div class="space-y-2">
+                {% for issue in project.issues[:3] %}
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full flex-shrink-0
+                        {% if issue.difficulty == 'beginner' %}bg-gh-greenText
+                        {% elif issue.difficulty == 'intermediate' %}bg-yellow-500
+                        {% else %}bg-red-500{% endif %}"></span>
+                    <span class="text-sm text-gh-text truncate flex-1">{{ issue.title }}</span>
+                    {% if issue.difficulty %}
+                    <span class="text-xs px-2 py-0.5 rounded-full
+                        {% if issue.difficulty == 'beginner' %}bg-green-900/40 text-gh-greenText
+                        {% elif issue.difficulty == 'intermediate' %}bg-yellow-900/40 text-yellow-400
+                        {% else %}bg-red-900/40 text-red-400{% endif %}">{{ issue.difficulty }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-sm text-gh-muted italic">No active issues</p>
+            {% endif %}
+        </div>
+
+        {# Languages & Stack #}
+        <div class="p-3 border-t border-gh-border bg-gh-canvas/30">
+            {# Languages #}
+            <div class="flex flex-wrap items-center gap-1.5 mb-2">
+                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-900/40 text-gh-link">{{ project.primary_language }}</span>
+                {% if project.languages %}
+                    {% for lang in project.languages %}
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-gh-border text-gh-text">{{ lang }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {# Tech Stack #}
+            {% if project.tech_stack %}
+            <div class="flex flex-wrap gap-1.5">
+                {% for tech in project.tech_stack %}
+                <span class="text-xs px-2 py-0.5 rounded bg-purple-900/40 text-purple-300">{{ tech }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-xs text-gh-muted italic">Tech stack not detected</p>
+            {% endif %}
+        </div>
+    </article>
+    {% else %}
+    {# Empty State #}
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gh-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+        </svg>
+        <h3 class="mt-3 text-base font-medium text-white">No repositories yet</h3>
+        <p class="mt-1 text-sm text-gh-muted">Tap the + button below to add one.</p>
     </div>
-{% endfor %}
+    {% endfor %}
+</div>
 {% endblock %}
