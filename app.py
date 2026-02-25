@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from models import create_project, create_user, User
+import requests
 
 load_dotenv()
 
@@ -25,6 +26,27 @@ login_manager.login_message_category = 'info'
 @login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(db, user_id)
+
+def analyze_github_repo(repo_url):
+    try:
+        path = repo_url.split("github.com/")[1]
+        owner, repo = path.strip("/").split("/")[:2]
+    except Exception:
+        return None
+    api_url = f"https://api.github.com/repos/{owner}/{repo}"
+    resp = requests.get(api_url)
+    if resp.status_code != 200:
+        return None
+    data = resp.json()
+    return {
+        "repo_name": data.get("name"),
+        "primary_language": data.get("language") or "Unknown",
+        "description": data.get("description") or "",
+        "html_url": data.get("html_url"),
+        "open_issues_count": data.get("open_issues_count", 0)
+    }
+
+
 
 
 # --- Authentication Routes ---
@@ -122,15 +144,19 @@ def details(id):
 @login_required
 def add():
     if request.method == 'POST':
-        repo_name = request.form.get('repo_name')
         repo_url = request.form.get('repo_url')
-        language = request.form.get('primary_language')
-
-        new_project = create_project(repo_name, repo_url, language)
+        repo_data = analyze_github_repo(repo_url)
+        if not repo_data:
+            flash("Failed to fetch repository info. Check the URL.", "error")
+            return redirect(url_for('add'))
+        new_project = create_project(
+            repo_data['repo_name'],
+            repo_data['html_url'],
+            repo_data['primary_language']
+        )
         db.projects.insert_one(new_project)
-
+        flash(f"Repo '{repo_data['repo_name']}' added successfully!", "success")
         return redirect(url_for('index'))
-
     return render_template('add.html')
 
 
