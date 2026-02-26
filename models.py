@@ -52,7 +52,7 @@ def create_user(username, email, password, languages=None, experience_level=None
     return {
         "username": username,
         "email": email,
-        "password_hash": generate_password_hash(password),
+        "password_hash": generate_password_hash(password, method='pbkdf2:sha256'),
         "preferred_languages": languages or [],
         "experience_level": experience_level or "beginner",
         "saved_issues": [],
