@@ -149,10 +149,12 @@ def add():
         if not repo_data:
             flash("Failed to fetch repository info. Check the URL.", "error")
             return redirect(url_for('add'))
+        
         new_project = create_project(
             repo_data['repo_name'],
             repo_data['html_url'],
-            repo_data['primary_language']
+            repo_data['primary_language'],
+            current_user.id
         )
         db.projects.insert_one(new_project)
         flash(f"Repo '{repo_data['repo_name']}' added successfully!", "success")
@@ -186,5 +188,20 @@ def search():
         results = []
     return render_template('search.html', results=results)
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        github_url = request.form.get('github_url', '').strip()
+        db.users.update_one(
+            {"_id": ObjectId(current_user.id)},
+            {"$set": {"github_url": github_url}}
+        )
+        return redirect(url_for('profile'))
+
+    added_repos_count = db.projects.count_documents({"added_by": ObjectId(current_user.id)})
+    return render_template('profile.html', user=current_user, added_repos_count=added_repos_count)
+
 if __name__ == '__main__':
     app.run(debug=True)
+

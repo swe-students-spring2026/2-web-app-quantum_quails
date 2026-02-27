@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h1 class="text-lg font-semibold text-white mb-4">Profile</h1>
+
+<div class="bg-gh-surface p-4 rounded-lg border border-gh-border mb-6">
+    <div class="flex items-center gap-4 mb-6">
+        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=238636&color=fff" 
+             alt="Avatar" class="w-16 h-16 rounded-full border border-gh-border">
+        <div>
+            <p class="text-xs text-gh-muted uppercase tracking-wide">Username</p>
+            <p class="text-xl font-bold text-white">{{ user.username }}</p>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <p class="text-xs text-gh-muted uppercase tracking-wide">Email</p>
+        <p class="text-base text-white">{{ user.email }}</p>
+    </div>
+
+    <div class="mb-4">
+        <p class="text-xs text-gh-muted uppercase tracking-wide">Member Since</p>
+        <p class="text-base text-white">{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'N/A' }}</p>
+    </div>
+    
+    <form method="POST" class="mb-6">
+        <label class="block text-xs text-gh-muted uppercase tracking-wide mb-1">GitHub Profile URL</label>
+        <div class="flex gap-2">
+            <input type="url" name="github_url" value="{{ user.github_url | default('', true) }}" 
+                   class="flex-1 bg-gh-canvas border border-gh-border text-white p-2 rounded-md focus:outline-none focus:border-gh-link text-sm"
+                   placeholder="https://github.com/username">
+            <button type="submit" class="bg-gh-green text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-colors">
+                Save
+            </button>
+        </div>
+        {% if user.github_url %}
+        <a href="{{ user.github_url }}" target="_blank" rel="noopener noreferrer" class="text-xs text-gh-link hover:underline mt-2 inline-block">
+            View GitHub Profile &rarr;
+        </a>
+        {% endif %}
+    </form>
+    
+    <div class="pt-4 border-t border-gh-border">
+        <p class="text-xs text-gh-muted uppercase tracking-wide">Added Repositories</p>
+        <p class="text-2xl font-bold text-white">{{ added_repos_count }}</p>
+    </div>
+</div>
+
+<div class="bg-gh-surface p-4 rounded-lg border border-red-900/50">
+    <a href="{{ url_for('logout') }}" class="block w-full text-center bg-gh-canvas border border-red-900/50 text-red-400 py-2 rounded-md hover:bg-red-900/20 transition-colors">
+        Sign Out
+    </a>
+</div>
+{% endblock %}

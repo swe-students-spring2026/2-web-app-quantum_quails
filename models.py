@@ -17,6 +17,8 @@ class User(UserMixin):
         self.experience_level = user_data.get("experience_level", "beginner")
         self.saved_issues = user_data.get("saved_issues", [])
         self._is_active = user_data.get("is_active", True)
+        self.created_at = user_data.get("created_at")
+        self.github_url = user_data.get("github_url", "")
 
     @property
     def is_active(self):
@@ -61,11 +63,12 @@ def create_user(username, email, password, languages=None, experience_level=None
     }
 
 # --- PROJECT SCHEMA ---
-def create_project(repo_name, repo_url, language):
+def create_project(repo_name, repo_url, language, user_id):
     return {
         "repo_name": repo_name,
         "repo_url": repo_url,
-        "primary_language": language
+        "primary_language": language,
+        "added_by": ObjectId(user_id)
     }
 
 # --- ISSUE SCHEMA ---
