@@ -1,16 +1,21 @@
-<form method="POST">
-    <label>GitHub Repository URL:</label><br>
-    <input type="text" name="repo_url" placeholder="https://github.com/user/repo" required><br><br>
-    <button type="submit">Analyze & Add</button>
-</form>
+{% extends "base.html" %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="{{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+{% block title %}Add Repository{% endblock %}
 
-<br>
-<a href="{{ url_for('index') }}">Back</a>
+{% block content %}
+<h1 class="text-lg font-semibold text-white mb-4">Add Repository</h1>
+
+<div class="bg-gh-surface rounded-lg border border-gh-border p-4">
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gh-text mb-1">GitHub Repository URL</label>
+            <input type="text" name="repo_url" placeholder="https://github.com/user/repo" required 
+                   class="w-full bg-gh-canvas border border-gh-border rounded-md px-3 py-2 text-sm text-gh-text placeholder-gh-muted focus:outline-none focus:border-gh-link focus:ring-1 focus:ring-gh-link">
+        </div>
+        
+        <button type="submit" class="w-full bg-gh-green text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#2ea043] transition-colors">
+            Analyze & Add
+        </button>
+    </form>
+</div>
+{% endblock %}
