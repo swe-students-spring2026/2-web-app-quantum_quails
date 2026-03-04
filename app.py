@@ -191,4 +191,4 @@ def profile():
     return render_template('profile.html', user=current_user, added_repos_count=added_repos_count)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
