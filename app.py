@@ -15,13 +15,11 @@ app.secret_key = os.getenv("SECRET_KEY")
 client = MongoClient(os.getenv("MONGO_URI"))
 db = client.get_database()
 
-# Flask-Login configuration
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access this page.'
 login_manager.login_message_category = 'info'
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -46,10 +44,6 @@ def analyze_github_repo(repo_url):
         "open_issues_count": data.get("open_issues_count", 0)
     }
 
-
-
-
-# --- Authentication Routes ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -72,14 +66,12 @@ def login():
 
     return render_template('login.html')
 
-
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -125,14 +117,11 @@ def register():
 
     return render_template('register.html')
 
-
-# --- Protected Routes ---
 @app.route('/')
 @login_required
 def index():
     projects = db.projects.find()
     return render_template('index.html', projects=projects)
-
 
 @app.route('/item/<id>')
 @login_required
@@ -160,7 +149,6 @@ def add():
         flash(f"Repo '{repo_data['repo_name']}' added successfully!", "success")
         return redirect(url_for('index'))
     return render_template('add.html')
-
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
@@ -204,4 +192,3 @@ def profile():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
