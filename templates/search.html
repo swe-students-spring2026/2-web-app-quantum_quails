@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Search Repositories{% endblock %}
+
+{% block content %}
+<h1 class="text-lg font-semibold text-white mb-4">Search Repositories</h1>
+
+{# Search Form #}
+<form method="GET" action="{{ url_for('search') }}" class="mb-6">
+    <div class="flex gap-2">
+        <input
+            type="text"
+            name="q"
+            value="{{ request.args.get('q', '') }}"
+            placeholder="Search by repo name..."
+            class="flex-1 bg-gh-surface border border-gh-border rounded-md px-3 py-2 text-sm text-gh-text placeholder-gh-muted focus:outline-none focus:border-gh-link"
+        >
+        <button type="submit" class="px-4 py-2 bg-gh-green text-white text-sm rounded-md">Search</button>
+    </div>
+</form>
+
+{# Results #}
+{% if request.args.get('q') %}
+    {% if results %}
+    <div class="space-y-3">
+        {% for repo in results %}
+        <a href="{{ url_for('details', id=repo._id) }}" class="block bg-gh-surface rounded-lg border border-gh-border p-3 hover:border-gh-link transition-colors">
+            <h2 class="text-base font-medium text-white">{{ repo.repo_name }}</h2>
+            <p class="text-sm text-gh-link truncate">{{ repo.repo_url }}</p>
+            {% if repo.primary_language %}
+            <span class="mt-2 inline-block text-xs px-2 py-0.5 rounded-full bg-blue-900/40 text-gh-link">{{ repo.primary_language }}</span>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gh-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <h3 class="mt-3 text-base font-medium text-white">No results found</h3>
+        <p class="mt-1 text-sm text-gh-muted">Try a different search term.</p>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

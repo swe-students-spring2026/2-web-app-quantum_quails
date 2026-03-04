@@ -173,7 +173,7 @@ def delete(id):
 def search():
     query = request.args.get('q')
     if query:
-        results = db.projects.find({"name": {"$regex": query, "$options": "i"}})
+        results = db.projects.find({"repo_name": {"$regex": query, "$options": "i"}})
     else:
         results = []
     return render_template('search.html', results=results)
