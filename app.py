@@ -1,10 +1,11 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from models import create_project, create_user, User
+from github_api import fetch_repo_extended_data
 import requests
 
 load_dotenv()
@@ -119,11 +120,46 @@ def register():
 
     return render_template('register.html')
 
+def enrich_project(project):
+    """Add GitHub API data to a project dict."""
+    project_dict = dict(project)
+    project_dict['_id'] = str(project_dict['_id'])  # Convert ObjectId for JSON
+    repo_url = project_dict.get('repo_url', '')
+    if repo_url and not repo_url.startswith('http'):
+        repo_url = f"https://{repo_url}"
+    project_dict['repo_url'] = repo_url
+
+    extended_data = fetch_repo_extended_data(repo_url)
+    project_dict['readme'] = extended_data.get('readme')
+    project_dict['issues'] = extended_data.get('issues', [])
+    project_dict['languages'] = extended_data.get('languages', [])
+    project_dict['tech_stack'] = extended_data.get('tech_stack', [])
+    return project_dict
+
+
 @app.route('/')
 @login_required
 def index():
-    projects = db.projects.find()
-    return render_template('index.html', projects=projects)
+    projects_cursor = db.projects.find().limit(5)
+    projects = [enrich_project(p) for p in projects_cursor]
+    total_count = db.projects.count_documents({})
+    has_more = total_count > 5
+    return render_template('index.html', projects=projects, has_more=has_more)
+
+
+@app.route('/api/repos')
+@login_required
+def api_repos():
+    offset = request.args.get('offset', 0, type=int)
+    limit = request.args.get('limit', 5, type=int)
+
+    projects_cursor = db.projects.find().skip(offset).limit(limit)
+    projects = [enrich_project(p) for p in projects_cursor]
+
+    total_count = db.projects.count_documents({})
+    has_more = offset + limit < total_count
+
+    return jsonify({'projects': projects, 'has_more': has_more})
 
 @app.route('/item/<id>')
 @login_required
@@ -223,4 +259,4 @@ def profile():
     return render_template('profile.html', user=current_user, added_repos_count=added_repos_count)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
