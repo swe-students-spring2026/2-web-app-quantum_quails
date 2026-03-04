@@ -140,16 +140,26 @@ def add():
         if not repo_data:
             flash("Failed to fetch repository info. Check the URL.", "error")
             return redirect(url_for('add'))
-        
-        new_project = create_project(
-            repo_data['repo_name'],
-            repo_data['html_url'],
-            repo_data['primary_language'],
-            current_user.id
+
+        existing = db.projects.find_one({"repo_url": repo_data['html_url']})
+        if existing:
+            project_id = existing["_id"]
+        else:
+            new_project = create_project(
+                repo_data['repo_name'],
+                repo_data['html_url'],
+                repo_data['primary_language'],
+                current_user.id
+            )
+            result = db.projects.insert_one(new_project)
+            project_id = result.inserted_id
+
+        db.users.update_one(
+            {"_id": ObjectId(current_user.id)},
+            {"$addToSet": {"saved_issues": project_id}}
         )
-        db.projects.insert_one(new_project)
-        flash(f"Repo '{repo_data['repo_name']}' added successfully!", "success")
-        return redirect(url_for('index'))
+        flash(f"Repo '{repo_data['repo_name']}' saved!", "success")
+        return redirect(url_for('saved'))
     return render_template('add.html')
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
@@ -167,6 +177,23 @@ def edit(id):
 def delete(id):
     db.projects.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('index'))
+
+@app.route('/saved')
+@login_required
+def saved():
+    saved_ids = current_user.saved_issues or []
+    projects = list(db.projects.find({"_id": {"$in": saved_ids}}))
+    return render_template('saved.html', saved_projects=projects)
+
+@app.route('/unsave/<id>', methods=['POST'])
+@login_required
+def unsave_repo(id):
+    db.users.update_one(
+        {"_id": ObjectId(current_user.id)},
+        {"$pull": {"saved_issues": ObjectId(id)}}
+    )
+    flash("Repository removed from saved list.", "info")
+    return redirect(url_for('saved'))
 
 @app.route('/search')
 @login_required
