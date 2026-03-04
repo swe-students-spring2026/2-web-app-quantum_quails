@@ -48,7 +48,7 @@ def fetch_readme(owner, repo):
 
 
 def fetch_issues(owner, repo, limit=3):
-    # Fetch top open issues for a repository
+    # Fetch top open issues for a repository.
     url = f"{GITHUB_API_BASE}/repos/{owner}/{repo}/issues"
     params = {"state": "open", "per_page": limit}
 
@@ -82,6 +82,7 @@ def fetch_languages(owner, repo):
 
 def detect_tech_stack(languages):
     # Detect likely tech stack based on languages
+    # Yes, this is a bit of a shortcut, but I felt it a valid heuristic
     tech_stack = []
     lang_lower = [l.lower() for l in languages]
 
