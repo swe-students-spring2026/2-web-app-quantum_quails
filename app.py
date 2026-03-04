@@ -162,11 +162,14 @@ def edit(id):
         return redirect(url_for('index'))
     return render_template('edit.html', item=item)
 
-@app.route('/delete/<id>', methods=['POST'])
+@app.route('/delete/<id>', methods=['GET', 'POST'])
 @login_required
 def delete(id):
-    db.projects.delete_one({"_id": ObjectId(id)})
-    return redirect(url_for('index'))
+    item = db.projects.find_one({"_id": ObjectId(id)})
+    if request.method == 'POST':
+        db.projects.delete_one({"_id": ObjectId(id)})
+        return redirect(url_for('index'))
+    return render_template('delete.html', item=item)
 
 @app.route('/search')
 @login_required

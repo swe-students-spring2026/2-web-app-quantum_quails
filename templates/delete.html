@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ item.repo_name }} - Open Sorcerer{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('details', id=item._id) }}" class="flex items-center gap-1 text-sm text-gh-muted mb-4">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Back
+</a>
+
+<h1 class="text-lg font-semibold text-white mb-4">Delete Repository</h1>
+
+<div class="bg-gh-surface rounded-lg border border-red-800 p-4 mb-4">
+    <p class="text-sm text-gh-text">Are you sure you want to delete <span class="text-white font-medium">{{ item.repo_name }}</span>? This cannot be undone.</p>
+</div>
+
+<div class="flex gap-3">
+    <a href="{{ url_for('details', id=item._id) }}"
+       class="flex-1 text-center py-2 text-sm bg-gh-surface border border-gh-border text-gh-text rounded-md">
+        Cancel
+    </a>
+    <form method="POST" action="{{ url_for('delete', id=item._id) }}" class="flex-1">
+        <button type="submit" class="w-full py-2 text-sm bg-red-900/40 border border-red-800 text-red-400 rounded-md">
+            Delete
+        </button>
+    </form>
+</div>
+
+{% endblock %}
