@@ -110,10 +110,12 @@ def register():
             return render_template('register.html')
 
         new_user = create_user(username, email, password)
-        db.users.insert_one(new_user)
+        result = db.users.insert_one(new_user)
+        new_user['_id'] = result.inserted_id
 
-        flash('Registration successful! Please log in.', 'success')
-        return redirect(url_for('login'))
+        user = User(new_user)
+        login_user(user)
+        return redirect(url_for('index'))
 
     return render_template('register.html')
 
