@@ -1,20 +1,31 @@
 {% extends "base.html" %}
 
-{% block title %}Login - Quantum Quails{% endblock %}
+{% block title %}Open Sorcerer{% endblock %}
 
 {% block content %}
-<h1>Login</h1>
+<h1 class="text-lg font-semibold text-white mb-4">Login</h1>
 
-<form method="POST">
-    <label>Username:</label><br>
-    <input type="text" name="username" required><br><br>
+<div class="bg-gh-surface rounded-lg border border-gh-border p-4">
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gh-text mb-1">Username</label>
+            <input type="text" name="username" required placeholder="Enter your username"
+                   class="w-full bg-gh-canvas border border-gh-border rounded-md px-3 py-2 text-sm text-gh-text placeholder-gh-muted focus:outline-none focus:border-gh-link focus:ring-1 focus:ring-gh-link">
+        </div>
 
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
+        <div>
+            <label class="block text-sm font-medium text-gh-text mb-1">Password</label>
+            <input type="password" name="password" required placeholder="Enter your password"
+                   class="w-full bg-gh-canvas border border-gh-border rounded-md px-3 py-2 text-sm text-gh-text placeholder-gh-muted focus:outline-none focus:border-gh-link focus:ring-1 focus:ring-gh-link">
+        </div>
 
-    <button type="submit">Login</button>
-</form>
+        <button type="submit" class="w-full bg-gh-green text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#2ea043] transition-colors">
+            Login
+        </button>
+    </form>
+</div>
 
-<br>
-<p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+<p class="mt-4 text-sm text-gh-muted text-center">
+    Don't have an account? <a href="{{ url_for('register') }}" class="text-gh-link hover:underline">Register here</a>
+</p>
 {% endblock %}
