@@ -136,7 +136,6 @@ def enrich_project(project):
     project_dict['tech_stack'] = extended_data.get('tech_stack', [])
     return project_dict
 
-
 @app.route('/')
 @login_required
 def index():
@@ -145,7 +144,6 @@ def index():
     total_count = db.projects.count_documents({})
     has_more = total_count > 5
     return render_template('index.html', projects=projects, has_more=has_more)
-
 
 @app.route('/api/repos')
 @login_required
