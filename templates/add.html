@@ -18,4 +18,11 @@
         </button>
     </form>
 </div>
+<script>
+    document.querySelector('form').addEventListener('submit', e => {
+        if (!document.querySelector('input[name="repo_url"]').value.includes('github.com')) {
+            e.preventDefault(); alert('Please enter a valid GitHub URL!');
+        }
+    });
+</script>
 {% endblock %}
