@@ -1,10 +1,10 @@
 ## Product vision statement
 
-A web application that uses AI to analyze open-source repositories and recommend beginner-friendly contribution opportunities for developers.
+A simple web application for developers to quickly scroll through and save open source repositories.
 
 ## User stories
 
-[Link_to_Issues](https://github.com/swe-students-spring2026/2-web-app-quantum_quails/issues)
+[View user stories on our issues list](https://github.com/swe-students-spring2026/2-web-app-quantum_quails/issues)
 
 ## Steps necessary to run the software
 
@@ -15,7 +15,7 @@ cd 2-web-app-quantum_quails
 ```
 **2. Set up a virtual environment**
 ```bash
-python3 -m venv venv
+python -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
 ```
 
@@ -29,8 +29,9 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The application will run locally at http://127.0.0.1:5000.
-## Task boards
+The application will run locally at http://127.0.0.1:5001.
 
-[Link_to_Sprint1_Task_Board](https://github.com/orgs/swe-students-spring2026/projects/37)
-[Link_to_Sprint2_Task_Board](https://github.com/orgs/swe-students-spring2026/projects/67)
+## Task boards (for graders)
+
+[Sprint 1 Task Board](https://github.com/orgs/swe-students-spring2026/projects/37)
+[Sprint 2 Task Board](https://github.com/orgs/swe-students-spring2026/projects/67)
